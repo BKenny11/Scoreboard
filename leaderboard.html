@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no
+		initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Rock This Way Leaderboard</title>
+
+    <style>
+        @font-face {
+            font-family: antonio;
+            src: url(Antonio-Light.ttf);
+        }
+
+        html {
+            font-family: antonio;
+            font-size: 1em;
+            height: 100%;
+            background: url('background1.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        #submit {
+            margin-left: 25px;
+            margin-top: 15px;
+            padding: 10px;
+            background: none;
+            border: solid white 1px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        #boards {
+            margin-left: 60px;
+            margin-right: 60px;
+        }
+
+        .footerText {
+            font-size: 20px;
+            margin-left: 20px;
+        }
+
+        .footerInput {
+            background: none;
+            font-size: 20px;
+            color: white;
+            border: solid white 1px;
+        }
+
+        footer {
+            opacity: 0.6;
+            color: white;
+            background: linear-gradient(to right, #422828 0%, #0f0b0f 100%);
+            position: absolute;
+            bottom: 0px;
+            text-align: center;
+            display: inline-block;
+            width: 100%;
+            margin-left: -10px;
+            padding-bottom: 20px;
+            padding-top: 10px;
+            left: 0;
+            right: 0;
+        }
+
+        table,
+        th,
+        td {
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        tr.d0 {
+            color: white;
+        }
+
+        tr.d1 {
+            background-color: rgba(131, 131, 131, 0.1);
+            color: white;
+        }
+
+        #leaderboard {
+            float: left;
+            height: 60vh;
+            width: 45%;
+            margin-right: 10%;
+        }
+
+        #leaderboard2 {
+            height: 60vh;
+            width: 45%;
+        }
+
+        .first {
+            border: 1px solid #d4cc00;
+        }
+
+        .second {
+            border: 1px solid #9f9f9f;
+        }
+
+        .third {
+            border: 1px solid #9d4e00;
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = load;
+
+        var leaderBoard = {};
+
+        window.addEventListener("keydown", function (event) {
+            if (event.keyCode == 13) {
+                addPlayer();
+            }
+        }, false);
+
+        function load() {
+
+            for (var i = 0; i < 20; i++) {
+                leaderBoard[i] = -999999;
+
+            }
+            document.getElementById("leaderboard").innerHTML = populateTable(0);
+            document.getElementById("leaderboard2").innerHTML = populateTable(10);
+        }
+
+
+
+        function addPlayer() {
+            leaderBoard[document.getElementById("teamname").value] = document.getElementById("score").value;
+            document.getElementById("teamname").value = "";
+            document.getElementById("score").value = "";
+
+            document.getElementById("leaderboard").innerHTML = populateTable(0);
+            document.getElementById("leaderboard2").innerHTML = populateTable(10);
+
+        }
+
+
+
+        function populateTable(table) {
+
+            var sortedBoard = sortObject(leaderBoard);
+            var updatedList = "";
+            updatedList =
+                "<col width='50'><col width='130'><col width='130'><tr class='d0'><td><strong>RANK</strong></td><td><strong>USERNAME</strong></td><td><strong>SCORE</strong></td></tr>";
+
+
+            for (var i = table; i < (table + 10); i++) {
+                var position = i + 1;
+                console.log(sortedBoard[i]);
+                if (sortedBoard[i].value != -999999) {
+                    if (i % 2) {
+                        if (i == 1) {
+                            updatedList += "<tr class='d0 second'><td>" + position + "</td><td>" + sortedBoard[i].key +
+                                "</td><td>" + sortedBoard[i].value + "</td></tr>";
+                        } else {
+                            updatedList += "<tr class='d0'><td>" + position + "</td><td>" + sortedBoard[i].key +
+                                "</td><td>" + sortedBoard[i].value + "</td></tr>";
+                        }
+
+                    } else {
+                        if (i == 0) {
+                            updatedList += "<tr class='d1 first'><td>" + position + "</td><td>" + sortedBoard[i].key +
+                                "</td><td>" + sortedBoard[i].value + "</td></tr>";
+                        } else if (i == 2) {
+                            updatedList += "<tr class='d1 third'><td>" + position + "</td><td>" + sortedBoard[i].key +
+                                "</td><td>" + sortedBoard[i].value + "</td></tr>";
+                        } else {
+                            updatedList += "<tr class='d1'><td>" + position + "</td><td>" + sortedBoard[i].key +
+                                "</td><td>" + sortedBoard[i].value + "</td></tr>";
+                        }
+
+                    }
+
+                } else {
+                    if (i % 2) {
+                        if (i == 1) {
+                            updatedList += "<tr class='d0 second'><td>" + position + "</td><td></td><td></td></tr>";
+                        } else {
+                            updatedList += "<tr class='d0'><td>" + position + "</td><td></td><td></td></tr>";
+                        }
+
+                    } else {
+                        if (i == 0) {
+                            updatedList += "<tr class='d1 first'><td>" + position + "</td><td></td><td></td></tr>";
+                        } else if (i == 2) {
+                            updatedList += "<tr class='d1 third'><td>" + position + "</td><td></td><td></td></tr>";
+                        } else {
+                            updatedList += "<tr class='d1'><td>" + position + "</td><td></td><td></td></tr>";
+                        }
+
+                    }
+                }
+            }
+
+            return updatedList;
+
+        }
+
+
+        function sortObject(obj) {
+            var arr = [];
+            var prop;
+            for (prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    arr.push({
+                        'key': prop,
+                        'value': obj[prop]
+                    });
+                }
+            }
+            arr.sort(function (a, b) {
+                return b.value - a.value;
+            });
+            return arr;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <header>
+
+        <img src="header.png" height="175">
+
+    </header>
+    <div id="boards">
+        <table id="leaderboard">
+
+
+        </table>
+
+        <table id="leaderboard2">
+
+
+        </table>
+    </div>
+    <footer>
+        <div style="text-align: center;">
+
+            <span class="footerText">Username:</span>
+            <input id="teamname" class="footerInput" type="text" name="teamname">
+            <span class="footerText">Score:</span>
+            <input id="score" class="footerInput" type="text" name="score">
+            <button id="submit" onclick="addPlayer()">Submit</button>
+        </div>
+    </footer>
+</body>
+
+</html>
